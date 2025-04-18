@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Interaktif: Wujud Zat dan Perubahannya</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .book-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+        
+        /* Gaya khusus untuk halaman cover */
+        #cover {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 80vh;
+        }
+        
+        .cover-logo {
+            width: 400px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .cover-title {
+            color: #2e86c1;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .cover-subtitle {
+            color: #e74c3c;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        
+        .cover-info {
+            margin: 30px auto;
+            text-align: center; /* Teks di dalam div juga rata tengah */
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .cover-info p {
+            margin: 10px 0;
+            text-align: center; /* Memastikan teks rata tengah */
+        }
+        
+        .start-button-container {
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .start-button {
+            background-color: #2e86c1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .start-button:hover {
+            background-color: #1a5276;
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: #2e86c1;
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #e74c3c;
+            border-bottom: 2px dashed #e74c3c;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        
+        .page {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .quiz-option {
+            background-color: #eaf2f8;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            background-color: #d4e6f1;
+        }
+        
+        .correct {
+            background-color: #abebc6;
+        }
+        
+        .incorrect {
+            background-color: #f5b7b1;
+        }
+        
+        .drag-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .drag-item {
+            width: 100px;
+            height: 120px;
+            background-color: #f9e79f;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+            cursor: grab;
+            text-align: center;
+            padding: 5px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            touch-action: none;
+            user-select: none;
+            position: relative; /* Tambahkan ini */
+            z-index: 1; /* Tambahkan ini */
+        }
+        .drag-item:active {
+            cursor: grabbing;
+            opacity: 0.7;
+        }
+
+        .drop-zone.drag-over {
+            background-color: #a3e4d7;
+            border-color: #16a085;
+        }
+
+        .drag-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .drop-zone {
+            width: 150px;
+            min-height: 180px;
+            background-color: #d5f5e3;
+            border: 2px dashed #27ae60;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .drop-zone h3 {
+            margin-top: 0;
+            color: #2e86c1;
+        }
+        
+        .animation-box {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: #aed6f1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .water-molecule {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(52, 152, 219, 0.7);
+            border-radius: 50%;
+            position: absolute;
+            transition: all 2s linear;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .feedback {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .good-feedback {
+            background-color: #abebc6;
+            color: #145a32;
+            border: 1px solid #2ecc71;
+        }
+        
+        .bad-feedback {
+            background-color: #f5b7b1;
+            color: #78281f;
+            border: 1px solid #e74c3c;
+        }
+        
+        #certificate {
+            border: 5px double #2e86c1;
+            padding: 20px;
+            text-align: center;
+            background-color: #fef9e7;
+            margin: 20px auto;
+            max-width: 500px;
+            display: none;
+        }
+        #state-explanation {
+            transition: all 0.5s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        #molecules-container {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #state-explanation {
+            transition: all 0.5s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #2e86c1;
+        }
+        
+        .molecule {
+            position: absolute;
+            background-color: #3498db;
+            border-radius: 50%;
+            transition: all 1s ease;
+        }
+        
+        .solid .molecule {
+            background-color: #3498db;
+        }
+        
+        .liquid .molecule {
+            background-color: #2980b9;
+        }
+        
+        .gas .molecule {
+            background-color: #1abc9c;
+        }
+
+        /* Untuk mobile */
+        @media (max-width: 768px) {
+            .drag-item {
+                width: 80px;
+                height: 100px;
+                margin: 8px;
+            }
+            
+            .drop-zone {
+                min-height: 120px;
+                margin: 8px 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <!-- Halaman Cover Baru -->
+        <div id="cover">
+            <div class="cover-page">
+                <img src="https://upload.wikimedia.org/wikipedia/id/thumb/0/09/Logo_Almamater_UPI.svg/1200px-Logo_Almamater_UPI.svg.png" 
+                     alt="Logo UPI" class="cover-logo">
+                  <!--<h1 class="cover-title">Wujud Zat dan Perubahannya</h1>-->
+                <p><strong>Diajukan Untuk Memenuhi Tugas</strong></p>
+                <p><strong>Pengembangan Media dan Sumber Belajar Abad Ke-21 di SD</strong></p>
+              
+                <div class="cover-info">
+                    <p><strong>Disusun oleh:</strong></p>
+                    <p>Nama: Candra Dewi A. P</p>
+                    <p>NIM: 2432656</p>
+                    
+                    <p style="margin-top: 30px;"><strong>Dosen Pengampu:</strong></p>
+                    <p>Dr. Dede Trie Kurniawan, S.Si., M.Pd</p>
+                    <p>Media Pembelajaran Sains SD</p>
+                </div>
+                <p><strong>MAGISTER PENDIDIKAN GURU SEKOLAH DASAR</strong></p>
+                <p><strong>UNIVERSITAS PENDIDIKAN INDONESIA</strong></p>
+                <p><strong>KAMPUS CIBIRU</strong></p>
+                <p><strong>2025</strong></p>
+                
+                <div class="start-button-container">
+                    <button class="start-button" onclick="startBook()">Mulai Pembelajaran</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Page - Video Explanation (Insert this after the cover page) -->
+<div id="page1" class="content-page" style="display: none;">
+    <h1>Video Penjelasan: Wujud Zat dan Perubahannya</h1>
+    <h3 style="text-align: center; color: #7f8c8d;">Mari belajar melalui video interaktif!</h3>
+
+    <div style="max-width: 800px; margin: 20px auto; background: #f8f9fa; padding: 20px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <!-- Embedded YouTube Video -->
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+            <iframe 
+                src="https://www.youtube.com/embed/uEpwLc7MaWU" 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px;"
+                allowfullscreen>
+            </iframe>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #eaf2f8; border-radius: 8px;">
+            <h3 style="color: #2e86c1; margin-top: 0;">Panduan Belajar:</h3>
+            <ol>
+                <li>Tonton video penjelasan dengan seksama</li>
+                <li>Catat hal-hal penting yang kamu pelajari</li>
+                <li>Jeda video jika diperlukan untuk memahami konsep</li>
+                <li>Setelah selesai, mari ke materi yang belum dijelaskan divideo</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button onclick="showCover()">Kembali ke Cover</button>
+        <button onclick="nextPage(1)">Lanjut ke Materi</button>
+    </div>
+</div>
+
+        <!-- Semua halaman konten (disembunyikan di awal) -->
+        <div id="page2" class="content-page" style="display: none;">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+        
+            <h2>Selamat Datang di Dunia Zat!</h2>
+            <p>Hai teman-teman! Tahukah kalian bahwa segala sesuatu di sekitar kita terbuat dari zat? Zat bisa berwujud padat, cair, atau gas. Yuk kita pelajari bersama!</p>
+            
+            <div id="molecules-container" class="solid">
+                <!-- Molekul akan di-generate oleh JavaScript -->
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button onclick="showState('solid')">Padat</button>
+                <button onclick="showState('liquid')">Cair</button>
+                <button onclick="showState('gas')">Gas</button>
+            </div>
+            
+            <!-- Explanation Box -->
+            <div id="state-explanation" style="margin: 20px auto; padding: 15px; background-color: #eaf2f8; border-radius: 10px; max-width: 600px; display: none;">
+                <h3 style="color: #2e86c1; margin-top: 0;" id="state-title">Penjelasan</h3>
+                <p id="explanation-text"></p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(2)">Kembali</button>
+                <button onclick="nextPage(2)">Lanjut</button>
+            </div>
+        </div>
+        
+        <!-- Halaman 2: Contoh Wujud Zat -->
+        <div id="page3" class="page">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+
+            <h2>Contoh Wujud Zat dalam Kehidupan</h2>
+            <p>Berikut adalah contoh benda-benda di sekitar kita berdasarkan wujudnya:</p>
+            
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                <div style="width: 30%; text-align: center;">
+                    <h3>Padat</h3>
+                    <img src="https://cdn1-production-images-kly.akamaized.net/d2VONdTQVPNFN3TLWk-J93QHQUI=/1200x1200/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/2758283/original/080679300_1553227164-photo-1494861895304-fb272971c078.jpg" style="width: 100px; height: 100px; border-radius: 10px;">
+                    <p>Batu</p>
+                </div>
+                <div style="width: 30%; text-align: center;">
+                    <h3>Cair</h3>
+                    <img src="https://pdaminfo.pdampintar.id/wp-content/uploads/2023/10/Air-Minum.jpeg" style="width: 100px; height: 100px; border-radius: 10px;">
+                    <p>Air</p>
+                </div>
+                <div style="width: 30%; text-align: center;">
+                    <h3>Gas</h3>
+                    <img src="https://cdn.rri.co.id/berita/Entikong/o/1739947748210-sdd/wna6d9o9aowjgyi.jpeg" style="width: 100px; height: 100px; border-radius: 10px;">
+                    <p>Uap</p>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Ciri-ciri Wujud Zat:</h3>
+            <ul>
+                <li><strong>Padat:</strong> Bentuk dan volumenya tetap</li>
+                <li><strong>Cair:</strong> Bentuk berubah, volume tetap</li>
+                <li><strong>Gas:</strong> Bentuk dan volume berubah</li>
+            </ul>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(3)">Sebelumnya</button>
+                <button onclick="nextPage(3)">Lanjut</button>
+            </div>
+        </div>
+        
+        <!-- Halaman 3: Kuis Singkat -->
+        <div id="page4" class="page">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+
+            <h2>Kuis Cepat: Kenali Wujud Zat!</h2>
+            <p>Pilihlah jawaban yang benar untuk setiap pertanyaan berikut:</p>
+            
+            <div id="quiz1">
+                <h3>1. Manakah yang termasuk zat padat?</h3>
+                <div class="quiz-option" onclick="checkAnswer(this, 'correct')">A. Batu</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 'incorrect')">B. Air</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 'incorrect')">C. Uap</div>
+                <div id="feedback1" class="feedback hidden"></div>
+            </div>
+            
+            <div id="quiz2">
+                <h3>2. Zat yang bentuknya berubah-ubah tetapi volumenya tetap adalah...</h3>
+                <div class="quiz-option" onclick="checkAnswer(this, 'incorrect')">A. Padat</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 'correct')">B. Cair</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 'incorrect')">C. Gas</div>
+                <div id="feedback2" class="feedback hidden"></div>
+            </div>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(4)">Sebelumnya</button>
+                <button onclick="nextPage(4)">Lanjut</button>
+            </div>
+        </div>
+        
+        <!-- Halaman 4: Perubahan Wujud -->
+        <div id="page5" class="page">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+
+            <h2>Perubahan Wujud Zat</h2>
+            <p>Zat dapat berubah wujud ketika menerima atau melepaskan panas. Perhatikan diagram berikut:</p>
+            
+            
+            <p>Contoh perubahan wujud dalam kehidupan sehari-hari:</p>
+            <ul>
+                <li><strong>Mencair:</strong> Es batu menjadi air</li>
+                <li><strong>Membeku:</strong> Air menjadi es</li>
+                <li><strong>Menguap:</strong> Air menjadi uap</li>
+                <li><strong>Mengembun:</strong> Uap menjadi titik air</li>
+                <li><strong>Menyublim:</strong> Kapur barus menjadi gas</li>
+            </ul>
+            
+            <div class="animation-box" id="state-change-animation">
+                <div class="water-molecule"></div>
+            </div>
+            <p style="text-align: center;">Klik tombol untuk melihat perubahan</p>
+            <div style="text-align: center;">
+                <button onclick="startAnimation('melt')">Mencair</button>
+                <button onclick="startAnimation('freeze')">Membeku</button>
+                <button onclick="startAnimation('evaporate')">Menguap</button>
+                <button onclick="startAnimation('condense')">Mengembun</button>
+                <button onclick="startAnimation('sublimate')">Menyublim</button>
+            </div>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(5)">Sebelumnya</button>
+                <button onclick="nextPage(5)">Lanjut</button>
+            </div>
+        </div>
+        
+        <!-- Halaman 5: Aktivitas Drag and Drop -->
+        <div id="page6" class="page">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+
+            <h2>Aktivitas: Kelompokkan Wujud Zat!</h2>
+            <p>Seret gambar benda ke dalam kotak yang sesuai dengan wujud zatnya!</p>
+            
+            <div class="drag-container">
+                 <!-- Air -->
+                 <div class="drag-item" draggable="true" id="item2">
+                    <img src="https://img.lovepik.com/png/20231020/cartoon-water-drops-transparent-sea-object_271996_wh860.png" alt="Air" style="width: 80px;">
+                    <p>Air</p>
+                </div>
+
+                <!-- Udara -->
+                <div class="drag-item" draggable="true" id="item3">
+                    <img src="https://media.istockphoto.com/id/1171098892/id/vektor/desain-angin-yang-digambar-tangan.jpg?s=1024x1024&w=is&k=20&c=NhflfMg4QWkkLGYSJMxT0SA8EQz3bfWykvIiSrFSuUY=" alt="Udara" style="width: 80px;">
+                    <p>Udara</p>
+                </div>    
+                        
+                <!-- Batu -->
+                <div class="drag-item" draggable="true" id="item1">
+                    <img src="https://png.pngtree.com/png-clipart/20190904/original/pngtree-cartoon-stone-png-image_4498964.jpg" alt="Batu" style="width: 80px;">
+                    <p>Batu</p>
+                </div>
+                
+            
+            </div>
+            
+            <!-- Drop Zones -->
+            <div class="drag-container">
+                <!-- Padat -->
+                <div class="drop-zone" data-category="padat"" 
+                    ondragenter="this.classList.add('drag-over')" 
+                    ondragleave="this.classList.remove('drag-over')">
+                    <h3>Padat</h3>
+                </div>
+                
+                <!-- Cair -->
+                <div class="drop-zone" data-category="cair"
+                    ondragenter="this.classList.add('drag-over')" 
+                    ondragleave="this.classList.remove('drag-over')">
+                    <h3>Cair</h3>
+                
+                </div>
+                
+                <!-- Gas -->
+                <div class="drop-zone" data-category="gas"
+                    ondragenter="this.classList.add('drag-over')" 
+                    ondragleave="this.classList.remove('drag-over')">
+                    <h3>Gas</h3>
+                
+                </div>
+            </div>
+            
+            <div id="drag-feedback" class="feedback hidden"></div>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(6)">Sebelumnya</button>
+                <button onclick="nextPage(6)">Lanjut</button>
+            </div>
+        </div>
+        
+        <!-- Halaman 6: Evaluasi Akhir -->
+        <div id="page7" class="page">
+            <h1>Petualangan Sains: Wujud Zat dan Perubahannya</h1>
+            <h3 style="text-align: center; color: #7f8c8d;">Materi IPA Kelas 4 SD</h3>
+
+            <h2>Evaluasi Akhir</h2>
+            <p>Jawablah pertanyaan berikut untuk menguji pemahamanmu!</p>
+            
+            <form id="final-quiz">
+                <div style="margin-top: 20px;">
+                    <h3>1. Perhatikan gambar berikut! Apa wujud dari gambar ??</h3>
+                    <img src="https://cdn.pixabay.com/photo/2018/06/29/23/01/ice-cubes-3506782_1280.jpg" 
+                         alt="Es mencair menjadi air" 
+                         style="width: 200px; height: auto; border-radius: 10px; display: block; margin: 10px auto;">
+                    <label><input type="radio" name="q2" value="A"> A. Padat</label><br>
+                    <label><input type="radio" name="q2" value="B"> B. Cair</label><br>
+                    <label><input type="radio" name="q2" value="C"> C. Gas</label><br>
+                    <label><input type="radio" name="q2" value="D"> D. Uap</label>
+                </div>
+
+                <div>
+                    <h3>2. Apa yang terjadi ketika es batu dibiarkan di ruangan terbuka?</h3>
+                    <label><input type="radio" name="q1" value="A"> A. Membeku</label><br>
+                    <label><input type="radio" name="q1" value="B"> B. Mencair</label><br>
+                    <label><input type="radio" name="q1" value="C"> C. Menyublim</label><br>
+                    <label><input type="radio" name="q1" value="D"> D. Menguap</label>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>3. Zat yang bentuk dan volumenya selalu berubah adalah...</h3>
+                    <label><input type="radio" name="q3" value="A"> A. Padat</label><br>
+                    <label><input type="radio" name="q3" value="B"> B. Cair</label><br>
+                    <label><input type="radio" name="q3" value="C"> C. Gas</label><br>
+                    <label><input type="radio" name="q3" value="D"> D. Es</label>
+                </div>
+                
+                <!-- Soal baru 4 -->
+                <div style="margin-top: 20px;">
+                    <h3>4. Perubahan wujud apa yang ditunjukkan gambar ini?</h3>
+                    <img src="https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1634025439/01grqgjfceeqv2g63b7j0vgfr9.jpg" 
+                        alt="Es mencair menjadi air" 
+                        style="width: 200px; height: auto; border-radius: 10px; display: block; margin: 10px auto;">
+                        <label><input type="radio" name="q4" value="A"> A. Mengembun</label><br>
+                        <label><input type="radio" name="q4" value="B"> B. Menguap</label><br>
+                        <label><input type="radio" name="q4" value="C"> C. Menyublim</label><br>
+                        <label><input type="radio" name="q4" value="D"> D. Mencair</label>
+                </div>
+                
+                <!-- Soal baru 5 -->
+                <div style="margin-top: 20px;">
+                    <h3>5. Contoh benda yang dapat mengalami penyubliman adalah...</h3>
+                    <label><input type="radio" name="q5" value="A"> A. Kayu</label><br>
+                    <label><input type="radio" name="q5" value="B"> B. Kapur barus</label><br>
+                    <label><input type="radio" name="q5" value="C"> C. Besi</label><br>
+                    <label><input type="radio" name="q5" value="D"> D. Air</label>
+                </div>
+            </form>
+            
+            <button onclick="checkFinalQuiz()" style="margin-top: 20px;">Periksa Jawaban</button>
+            
+            <div id="quiz-result" class="feedback hidden" style="margin-top: 20px;"></div>
+            
+            <div id="certificate">
+                <h2>Hasil</h2>
+                <p>Diberikan kepada:</p>
+                <h3 id="student-name">Nama Siswa</h3>
+                <p>Atas keberhasilannya menyelesaikan pembelajaran</p>
+                <p><strong>"Wujud Zat dan Perubahannya"</strong></p>
+                <p>Nilai: <span id="numeric-score">0</span> (<span id="letter-grade">E</span>)</p>
+                <p>Skor: <span id="score-display">0</span></p>
+                <div id="cert-message" style="font-style: italic; margin: 10px 0;"></div>
+                <p>Tanggal: <span id="cert-date">14 April 2025</span></p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button onclick="prevPage(7)">Sebelumnya</button>
+                <button onclick="showCertificate()" id="finish-btn" style="display: none;">Lihat Hasil</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk memulai buku (sembunyikan cover, tampilkan halaman 1)
+        function startBook() {
+            document.getElementById('cover').style.display = 'none';
+            document.getElementById('page1').style.display = 'block';
+        }
+
+        // Add this new function
+        function startActivity() {
+            alert("Bagus! Sekarang kamu bisa melanjutkan ke materi pembelajaran.");
+            nextPage(1); // Proceeds to what was originally page 1 (now page 2)
+        }
+        
+        // Fungsi untuk kembali ke cover
+        function showCover() {
+            // Sembunyikan semua halaman konten
+            const pages = document.querySelectorAll('.content-page');
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Tampilkan cover
+            document.getElementById('cover').style.display = 'block';
+        }
+        
+        // Fungsi navigasi antar halaman konten
+        function nextPage(current) {
+            document.getElementById('page' + current).style.display = 'none';
+            document.getElementById('page' + (current + 1)).style.display = 'block';
+        }
+        
+        function prevPage(current) {
+            document.getElementById('page' + current).style.display = 'none';
+            // If going back from page 2 (content page), return to page 1 (video page)
+            // If going back from page 1 (video page), return to cover
+            if (current === 1) {
+                document.getElementById('cover').style.display = 'block';
+            } else {
+                document.getElementById('page' + (current - 1)).style.display = 'block';
+            }
+        }
+        // Fungsi kuis
+        function checkAnswer(element, result) {
+            // Reset semua opsi
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+            });
+            
+            // Tandai jawaban yang dipilih
+            element.classList.add(result);
+            
+            // Tampilkan feedback
+            const feedbackId = 'feedback' + element.parentElement.id.slice(-1);
+            const feedback = document.getElementById(feedbackId);
+            feedback.classList.remove('hidden');
+            
+            if (result === 'correct') {
+                feedback.textContent = 'Benar! Jawaban kamu tepat.';
+                feedback.className = 'feedback good-feedback';
+            } else {
+                feedback.textContent = 'Masih kurang tepat. Coba lagi!';
+                feedback.className = 'feedback bad-feedback';
+            }
+        }
+        
+        // Fungsi drag and drop
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+        
+        // Variabel global
+        let currentDraggedItem = null;
+        let initialTouchX = 0;
+        let initialTouchY = 0;
+        let initialElementX = 0;
+        let initialElementY = 0;
+        let touchOffsetX = 0;
+        let touchOffsetY = 0;
+        
+        
+        // Inisialisasi event untuk mobile dan desktop
+        function initDragDrop() {
+            const dragItems = document.querySelectorAll('.drag-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            // Event untuk desktop
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                
+                // Event untuk mobile - touch
+                item.addEventListener('touchstart', handleTouchStart, { passive: false });
+                item.addEventListener('touchmove', handleTouchMove, { passive: false });
+                item.addEventListener('touchend', handleTouchEnd);
+            });
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('touchmove', preventScroll, { passive: false });
+            });
+            
+            // Fungsi untuk mencegah scroll saat drag di mobile
+            function preventScroll(e) {
+                if (currentDraggedItem) {
+                    e.preventDefault();
+                }
+            }
+        }
+
+// Handler untuk desktop
+function handleDragStart(e) {
+    currentDraggedItem = e.target;
+    e.dataTransfer.setData('text/plain', e.target.id);
+    e.target.classList.add('dragging');
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.currentTarget.classList.add('drag-over');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    
+    const id = e.dataTransfer.getData('text/plain');
+    const draggedItem = document.getElementById(id);
+    processDrop(e.currentTarget, draggedItem);
+    
+    // Reset state
+    draggedItem.classList.remove('dragging');
+    currentDraggedItem = null;
+}
+
+// Handler untuk touch start (mobile)
+function handleTouchStart(e) {
+    e.preventDefault();
+    currentDraggedItem = e.target.closest('.drag-item');
+    
+    // Hitung offset antara touch point dan posisi elemen
+    const rect = currentDraggedItem.getBoundingClientRect();
+    touchOffsetX = e.touches[0].clientX - rect.left;
+    touchOffsetY = e.touches[0].clientY - rect.top;
+    
+    // Style untuk elemen yang di-drag
+    currentDraggedItem.style.position = 'fixed';
+    currentDraggedItem.style.zIndex = '1000';
+    currentDraggedItem.style.pointerEvents = 'none'; // Hindari event bubbling
+    currentDraggedItem.style.transform = 'scale(1.1)'; // Efek visual
+    currentDraggedItem.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+    
+    // Update posisi awal
+    updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+}
+
+// Handler untuk touch move (mobile)
+function handleTouchMove(e) {
+    if (!currentDraggedItem) return;
+    e.preventDefault();
+    updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+}
+
+// Fungsi pembantu untuk update posisi
+function updatePosition(clientX, clientY) {
+    if (!currentDraggedItem) return;
+    
+    // Hitung posisi baru dengan memperhitungkan offset
+    const x = clientX - touchOffsetX;
+    const y = clientY - touchOffsetY;
+    
+    // Terapkan posisi dengan transform untuk performa yang lebih baik
+    currentDraggedItem.style.left = `${x}px`;
+    currentDraggedItem.style.top = `${y}px`;
+}
+
+// Handler untuk touch end (mobile)
+function handleTouchEnd(e) {
+    if (!currentDraggedItem) return;
+    
+    // Dapatkan elemen di bawah posisi touch akhir
+    const touch = e.changedTouches[0];
+    const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // Reset style elemen yang di-drag
+    currentDraggedItem.style.position = '';
+    currentDraggedItem.style.left = '';
+    currentDraggedItem.style.top = '';
+    currentDraggedItem.style.zIndex = '';
+    currentDraggedItem.style.pointerEvents = '';
+    currentDraggedItem.style.transform = '';
+    currentDraggedItem.style.boxShadow = '';
+    
+    // Cari drop zone yang valid
+    if (elementUnderTouch) {
+        const dropZone = elementUnderTouch.closest('.drop-zone');
+        if (dropZone) {
+            processDrop(dropZone, currentDraggedItem);
+        }
+    }
+    
+    currentDraggedItem = null;
+}
+
+// Fungsi untuk memproses drop (untuk desktop dan mobile)
+function processDrop(dropZone, draggedItem) {
+    const feedback = document.getElementById('drag-feedback');
+    const category = dropZone.getAttribute('data-category');
+    const answerKey = {
+        'item1': 'padat',  // Batu -> Padat
+        'item2': 'cair',   // Air -> Cair
+        'item3': 'gas'     // Udara -> Gas
+    };
+    
+    if (answerKey[draggedItem.id] === category) {
+        feedback.textContent = "Benar! " + getFeedbackMessage(category);
+        feedback.className = "feedback good-feedback";
+        
+        // Clone item untuk ditempatkan di drop zone
+        const clone = draggedItem.cloneNode(true);
+        clone.classList.add('dropped');
+        clone.style.position = 'relative';
+        clone.style.left = '0';
+        clone.style.top = '0';
+        clone.style.transform = 'scale(0.9)';
+        clone.draggable = false;
+        
+        // Hapus event listeners untuk clone
+        clone.removeEventListener('dragstart', handleDragStart);
+        clone.removeEventListener('touchstart', handleTouchStart);
+        clone.removeEventListener('touchmove', handleTouchMove);
+        clone.removeEventListener('touchend', handleTouchEnd);
+        
+        dropZone.appendChild(clone);
+        
+        // Sembunyikan item asli (untuk mobile)
+        draggedItem.style.display = 'none';
+    } else {
+        feedback.textContent = "Coba lagi! Perhatikan wujud zatnya.";
+        feedback.className = "feedback bad-feedback";
+    }
+    
+    feedback.style.display = 'block';
+    feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function getFeedbackMessage(category) {
+    const messages = {
+        'padat': "Zat padat memiliki bentuk dan volume tetap.",
+        'cair': "Zat cair memiliki volume tetap tetapi bentuknya berubah.",
+        'gas': "Zat gas tidak memiliki bentuk dan volume tetap."
+    };
+    return messages[category];
+}
+// Panggil inisialisasi saat halaman dimuat
+window.addEventListener('DOMContentLoaded', initDragDrop);
+        
+        // Fungsi animasi perubahan wujud
+        function startAnimation(type) {
+    const box = document.getElementById('state-change-animation');
+    const molecule = box.querySelector('.water-molecule');
+    
+    // Reset posisi
+    molecule.style.top = '50%';
+    molecule.style.left = '50%';
+    molecule.style.transform = 'translate(-50%, -50%)';
+    molecule.style.width = '30px';
+    molecule.style.height = '30px';
+    molecule.style.opacity = '1';
+    molecule.style.borderRadius = '50%';
+    molecule.style.backgroundColor = 'rgba(52, 152, 219, 0.7)';
+    
+    if (type === 'melt') {
+        // Animasi mencair (padat -> cair)
+        molecule.style.width = '200px';
+        molecule.style.height = '10px';
+        molecule.style.top = '80%';
+        molecule.style.borderRadius = '5px';
+        molecule.style.backgroundColor = 'rgba(52, 152, 219, 0.7)';
+    } else if (type === 'freeze') {
+        // Animasi membeku (cair -> padat)
+        molecule.style.width = '40px';
+        molecule.style.height = '40px';
+        molecule.style.borderRadius = '10px';
+        molecule.style.backgroundColor = 'rgba(189, 195, 199, 0.8)';
+    } else if (type === 'evaporate') {
+        // Animasi menguap (cair -> gas)
+        molecule.style.width = '5px';
+        molecule.style.height = '5px';
+        molecule.style.top = '10%';
+        molecule.style.opacity = '0.5';
+        molecule.style.backgroundColor = 'rgba(236, 240, 241, 0.6)';
+    } else if (type === 'condense') {
+        // Animasi mengembun (gas -> cair)
+        // Mulai dari kecil (gas) ke bentuk cair
+        molecule.style.width = '5px';
+        molecule.style.height = '5px';
+        molecule.style.top = '10%';
+        molecule.style.opacity = '0.5';
+        
+        setTimeout(() => {
+            molecule.style.width = '200px';
+            molecule.style.height = '10px';
+            molecule.style.top = '80%';
+            molecule.style.opacity = '1';
+            molecule.style.borderRadius = '5px';
+        }, 500);
+    } else if (type === 'sublimate') {
+        // Animasi menyublim (padat -> gas)
+        // Mulai dari padat ke gas
+        molecule.style.width = '40px';
+        molecule.style.height = '40px';
+        molecule.style.borderRadius = '10px';
+        molecule.style.backgroundColor = 'rgba(189, 195, 199, 0.8)';
+        
+        setTimeout(() => {
+            molecule.style.width = '5px';
+            molecule.style.height = '5px';
+            molecule.style.top = '10%';
+            molecule.style.opacity = '0.5';
+            molecule.style.borderRadius = '50%';
+            molecule.style.backgroundColor = 'rgba(236, 240, 241, 0.6)';
+        }, 500);
+    }
+}
+        
+        // Fungsi evaluasi akhir
+        function checkFinalQuiz() {
+            const answers = {
+                q1: 'B', q2: 'A', q3: 'C', q4: 'B', q5: 'B'
+            };
+            
+            let correctAnswers = 0;
+            const form = document.getElementById('final-quiz');
+            const resultDiv = document.getElementById('quiz-result');
+            
+            // Periksa jawaban
+            for (const question in answers) {
+                const selected = form.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === answers[question]) {
+                    correctAnswers++;
+                }
+            }
+            
+            // Hitung nilai (0-100)
+            const numericScore = Math.round((correctAnswers / 5) * 100);
+            
+            // Tentukan grade huruf
+            let letterGrade, message;
+            if (numericScore >= 85) {
+                letterGrade = 'A';
+                message = 'Excellent! Kamu menguasai materi dengan sangat baik!';
+            } else if (numericScore >= 70) {
+                letterGrade = 'B';
+                message = 'Bagus! Pemahamanmu tentang materi sudah baik.';
+            } else if (numericScore >= 55) {
+                letterGrade = 'C';
+                message = 'Cukup. Pelajari lagi bagian yang masih kurang.';
+            } else if (numericScore >= 40) {
+                letterGrade = 'D';
+                message = 'Perlu belajar lebih giat lagi.';
+            } else {
+                letterGrade = 'E';
+                message = 'Ayo pelajari kembali materinya!';
+            }
+            
+            // Tampilkan hasil
+            resultDiv.classList.remove('hidden');
+            resultDiv.textContent = `Kamu menjawab ${correctAnswers} dari 5 soal dengan benar (Nilai: ${numericScore}/${letterGrade})`;
+            
+            // Set nilai untuk sertifikat
+            document.getElementById('numeric-score').textContent = numericScore;
+            document.getElementById('letter-grade').textContent = letterGrade;
+            document.getElementById('score-display').textContent = `${correctAnswers}/5`;
+            document.getElementById('cert-message').textContent = message;
+            
+            // Tampilkan feedback warna sesuai nilai
+            if (numericScore >= 70) {
+                resultDiv.className = 'feedback good-feedback';
+            } else {
+                resultDiv.className = 'feedback bad-feedback';
+            }
+            
+            // Tampilkan tombol sertifikat jika nilai cukup
+            document.getElementById('finish-btn').style.display = 'block';
+        }
+        
+        // Fungsi sertifikat
+        function showCertificate() {
+            const certificate = document.getElementById('certificate');
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('id-ID', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const studentName = prompt("Masukkan nama kamu untuk melihat hasil:");
+            if (studentName) {
+                document.getElementById('student-name').textContent = studentName;
+            }
+            
+            document.getElementById('cert-date').textContent = dateStr;
+            certificate.style.display = 'block';
+            certificate.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        
+
+        // Fungsi animasi molekul
+        function generateMolecules() {
+            const container = document.getElementById('molecules-container');
+            container.innerHTML = '';
+            
+            // Increase number of molecules for better visualization
+            for (let i = 0; i < 50; i++) {
+                const molecule = document.createElement('div');
+                molecule.className = 'molecule';
+                container.appendChild(molecule);
+            }
+        }
+
+        // State explanations data
+        const stateExplanations = {
+            solid: {
+                title: "Zat Padat",
+                text: "Zat padat memiliki bentuk dan volume yang tetap. Partikel-partikelnya tersusun sangat rapat dan teratur, hanya bergetar di tempatnya saja. Contoh: es batu, batu, kayu, dan besi."
+            },
+            liquid: {
+                title: "Zat Cair",
+                text: "Zat cair memiliki volume tetap tetapi bentuknya berubah mengikuti wadahnya. Partikelnya lebih renggang dan bisa bergerak terbatas saling melewati. Contoh: air, minyak, dan sirup."
+            },
+            gas: {
+                title: "Zat Gas",
+                text: "Zat gas tidak memiliki bentuk dan volume tetap. Partikelnya sangat renggang dan bergerak sangat bebas ke segala arah. Contoh: udara, uap air, dan oksigen."
+            }
+        };
+
+        // Function to show state and explanation
+        function showState(state) {
+            // Change the particle animation
+            changeParticleState(state);
+            
+            // Show explanation
+            const explanation = stateExplanations[state];
+            document.getElementById('state-title').textContent = explanation.title;
+            document.getElementById('explanation-text').textContent = explanation.text;
+            
+            const explanationBox = document.getElementById('state-explanation');
+            explanationBox.style.display = 'block';
+            
+            // Smooth scroll to explanation
+            explanationBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Renamed this function to avoid confusion
+        function changeParticleState(state) {
+            const container = document.getElementById('molecules-container');
+            container.className = state;
+            
+            const molecules = container.querySelectorAll('.molecule');
+            
+            molecules.forEach(mol => {
+                // Atur posisi awal
+                let top, left;
+                
+                if (state === 'solid') {
+                    // Padat: susunan teratur
+                    top = 10 + Math.floor(Math.random() * 6) * 30;
+                    left = 10 + Math.floor(Math.random() * 6) * 30;
+                    mol.style.width = '20px';
+                    mol.style.height = '20px';
+                    mol.style.backgroundColor = '#3498db';
+                } else if (state === 'liquid') {
+                    // Cair: posisi lebih acak
+                    top = 20 + Math.random() * 160;
+                    left = 20 + Math.random() * (container.offsetWidth - 40);
+                    mol.style.width = '15px';
+                    mol.style.height = '15px';
+                    mol.style.backgroundColor = '#2980b9';
+                } else {
+                    // Gas: sangat acak
+                    top = Math.random() * container.offsetHeight;
+                    left = Math.random() * container.offsetWidth;
+                    mol.style.width = '10px';
+                    mol.style.height = '10px';
+                    mol.style.backgroundColor = '#1abc9c';
+                }
+                
+                mol.style.top = `${top}px`;
+                mol.style.left = `${left}px`;
+                
+                // Hanya animasikan untuk cair dan gas
+                if (state !== 'solid') {
+                    animateMolecule(mol, container, state);
+                }
+            });
+        }
+        
+        function animateMolecule(molecule, container, state) {
+            const speed = state === 'liquid' ? 5 : 2;
+            const range = state === 'liquid' ? 20 : 50;
+            
+            function move() {
+                const currentTop = parseFloat(molecule.style.top);
+                const currentLeft = parseFloat(molecule.style.left);
+                
+                const newTop = currentTop + (Math.random() * range - range/2);
+                const newLeft = currentLeft + (Math.random() * range - range/2);
+                
+                // Pastikan molekul tetap dalam container
+                molecule.style.top = `${Math.max(0, Math.min(container.offsetHeight - 20, newTop))}px`;
+                molecule.style.left = `${Math.max(0, Math.min(container.offsetWidth - 20, newLeft))}px`;
+                
+                setTimeout(move, 1000 / speed);
+            }
+            
+            move();
+        }
+
+        // Initialize molecules when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+    generateMolecules();
+    changeParticleState('solid');
+    initDragDrop(); // Pastikan ini dipanggil
+    
+    // Untuk mobile, kita perlu mencegah default behavior pada touchmove
+    document.addEventListener('touchmove', function(e) {
+        if (currentDraggedItem) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+});
+    </script>
+</body>
+</html>
