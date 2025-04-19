@@ -252,7 +252,14 @@
             margin: 10px 0;
             border-radius: 5px;
             text-align: center;
+            display: block; /* Pastikan ini 'block' bukan 'none' */
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.hidden {
             display: none;
+            opacity: 0;
         }
         
         .good-feedback {
@@ -265,6 +272,11 @@
             background-color: #f5b7b1;
             color: #78281f;
             border: 1px solid #e74c3c;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
         }
         
         #certificate {
@@ -328,6 +340,12 @@
                 min-height: 120px;
                 margin: 8px 0;
             }
+        }
+
+        /* Animasi untuk feedback */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
     </style>
@@ -717,29 +735,55 @@
             }
         }
         // Fungsi kuis
-        function checkAnswer(element, result) {
-            // Reset semua opsi
-            const options = element.parentElement.querySelectorAll('.quiz-option');
-            options.forEach(opt => {
-                opt.classList.remove('correct', 'incorrect');
-            });
-            
-            // Tandai jawaban yang dipilih
-            element.classList.add(result);
-            
-            // Tampilkan feedback
-            const feedbackId = 'feedback' + element.parentElement.id.slice(-1);
-            const feedback = document.getElementById(feedbackId);
-            feedback.classList.remove('hidden');
-            
-            if (result === 'correct') {
-                feedback.textContent = 'Benar! Jawaban kamu tepat.';
-                feedback.className = 'feedback good-feedback';
-            } else {
-                feedback.textContent = 'Masih kurang tepat. Coba lagi!';
-                feedback.className = 'feedback bad-feedback';
-            }
+       // Fungsi kuis yang diperbaiki
+function checkAnswer(element, result) {
+    // Dapatkan parent question container
+    const questionContainer = element.closest('[id^="quiz"]');
+    
+    // Sembunyikan semua feedback di question ini
+    const allFeedbacks = questionContainer.querySelectorAll('.feedback');
+    allFeedbacks.forEach(fb => {
+        fb.classList.remove('show');
+        fb.classList.add('hidden');
+    });
+    
+    // Reset semua opsi di question ini
+    const allOptions = questionContainer.querySelectorAll('.quiz-option');
+    allOptions.forEach(opt => {
+        opt.classList.remove('correct', 'incorrect');
+    });
+    
+    // Tandai jawaban yang dipilih
+    element.classList.add(result);
+    
+    // Temukan feedback element yang sesuai
+    const questionNumber = questionContainer.id.replace('quiz', '');
+    const feedbackId = 'feedback' + questionNumber;
+    const feedback = document.getElementById(feedbackId);
+    
+    if (feedback) {
+        // Tampilkan feedback
+        feedback.classList.remove('hidden');
+        feedback.classList.add('show');
+        
+        if (result === 'correct') {
+            feedback.textContent = 'Benar! Jawaban kamu tepat. 👍';
+            feedback.className = 'feedback good-feedback show';
+        } else {
+            feedback.textContent = 'Masih kurang tepat. Coba lagi! 💡';
+            feedback.className = 'feedback bad-feedback show';
         }
+        
+        // Scroll ke feedback jika perlu
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    // Beri efek visual pada pilihan
+    element.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+        element.style.transform = 'scale(1)';
+    }, 200);
+}
         
         // Fungsi drag and drop
         function allowDrop(event) {
